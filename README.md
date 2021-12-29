@@ -26,7 +26,7 @@ https://github.com/OpenElement-GachaBot/YTrapBot/wiki
 
 Check out the contributing page
 
-https://github.com/OpenElement-GachaBot/YTrapBot/blob/main/CONTRIBUTING.md
+https://github.com/OpenElement-GachaBot/YTrapBot/blob/master/CONTRIBUTING.md
 
 and the development roadmap
 
