@@ -1,0 +1,183 @@
+{
+    "locations": [
+        {
+            "aberrationMode": false,
+            "bedX": 795,
+            "bedY": 537,
+            "crystalBedPrefix": "t1crystal",
+            "crystalBeds": 1,
+            "crystalInterval": 530,
+            "dropGen2Suits": false,
+            "dropItems": [
+                "prim"
+            ],
+            "keepItems": [
+                "riot",
+                "fab",
+                "pump",
+                "miner"
+            ],
+            "name": "Spider Cave",
+            "numDedis": 4,
+            "openTribeLog": true,
+            "pickupMethod": "fspam",
+            "seedBedPrefix": "t1seed",
+            "seedBeds": 24,
+            "showLogInterval": 600,
+            "sideVaults": true,
+            "singlePlayer": false,
+            "suicideBed": "suicide bed",
+            "suicideFrequency": 1,
+            "turnDirection": "right"
+        },
+        {
+            "aberrationMode": false,
+            "bedX": 635,
+            "bedY": 311,
+            "crystalBedPrefix": "gachacrystal",
+            "crystalBeds": 1,
+            "crystalInterval": 500,
+            "dropGen2Suits": true,
+            "dropItems": [
+                "prim"
+            ],
+            "keepItems": [
+                "fab",
+                "riot",
+                "pump"
+            ],
+            "name": "Vent",
+            "numDedis": 2,
+            "openTribeLog": false,
+            "pickupMethod": "fspam",
+            "seedBedPrefix": "gachaseed",
+            "seedBeds": 10,
+            "showLogInterval": 300,
+            "sideVaults": false,
+            "singlePlayer": false,
+            "suicideBed": "suicide bed",
+            "suicideFrequency": 5,
+            "turnDirection": "360"
+        },
+        {
+            "aberrationMode": false,
+            "bedX": 392,
+            "bedY": 509,
+            "crystalBedPrefix": "gachacrystal",
+            "crystalBeds": 4,
+            "crystalInterval": 500,
+            "dropGen2Suits": false,
+            "dropItems": [
+                "prim"
+            ],
+            "keepItems": [
+                "fab",
+                "riot",
+                "pump"
+            ],
+            "name": "Oil Cave",
+            "numDedis": 2,
+            "openTribeLog": false,
+            "pickupMethod": "fspam",
+            "seedBedPrefix": "gachaseed",
+            "seedBeds": 24,
+            "showLogInterval": 0,
+            "sideVaults": false,
+            "singlePlayer": false,
+            "suicideBed": "suicide bed",
+            "suicideFrequency": 1,
+            "turnDirection": "left"
+        },
+        {
+            "aberrationMode": false,
+            "bedX": 225,
+            "bedY": 320,
+            "crystalBedPrefix": "gachacrystal",
+            "crystalBeds": 2,
+            "crystalInterval": 500,
+            "dropGen2Suits": false,
+            "dropItems": [
+                "prim"
+            ],
+            "keepItems": [
+                "fab",
+                "riot",
+                "pump",
+                "miner"
+            ],
+            "name": "Extinction Tree",
+            "numDedis": 2,
+            "openTribeLog": false,
+            "pickupMethod": "fspam",
+            "seedBedPrefix": "gachaseed",
+            "seedBeds": 18,
+            "showLogInterval": 600,
+            "sideVaults": false,
+            "singlePlayer": false,
+            "suicideBed": "suicide bed",
+            "suicideFrequency": 3,
+            "turnDirection": "360"
+        },
+        {
+            "aberrationMode": false,
+            "bedX": 934,
+            "bedY": 662,
+            "crystalBedPrefix": "bed",
+            "crystalBeds": 1,
+            "crystalInterval": 500,
+            "dropGen2Suits": false,
+            "dropItems": [
+                "prim",
+                "ramshackle"
+            ],
+            "keepItems": [
+                "fab",
+                "riot",
+                "pump"
+            ],
+            "name": "Bog Tree",
+            "numDedis": 4,
+            "openTribeLog": false,
+            "pickupMethod": "fspam",
+            "seedBedPrefix": "seed",
+            "seedBeds": 6,
+            "showLogInterval": 600,
+            "sideVaults": false,
+            "singlePlayer": true,
+            "suicideBed": "suicide bed",
+            "suicideFrequency": 3,
+            "turnDirection": "360"
+        },
+        {
+            "aberrationMode": false,
+            "bedX": 814,
+            "bedY": 546,
+            "crystalBedPrefix": "t2crystal",
+            "crystalBeds": 1,
+            "crystalInterval": 500,
+            "dropGen2Suits": false,
+            "dropItems": [
+                "prim",
+                "ramshackle"
+            ],
+            "keepItems": [
+                "fab",
+                "riot",
+                "pump",
+                "miner"
+            ],
+            "name": "Spider Tower 2",
+            "numDedis": 4,
+            "openTribeLog": false,
+            "pickupMethod": "fspam",
+            "seedBedPrefix": "t2seed",
+            "seedBeds": 28,
+            "showLogInterval": 600,
+            "sideVaults": true,
+            "singlePlayer": false,
+            "suicideBed": "suicide bed",
+            "suicideFrequency": 1,
+            "turnDirection": "360"
+        }
+    ]
+}
