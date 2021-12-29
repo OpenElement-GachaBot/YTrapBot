@@ -8,6 +8,7 @@ import pyautogui
 import screen
 import cv2
 import numpy as np
+import arkMonitoring
 
 inventory_template = cv2.imread("templates/inventory_template.png", cv2.IMREAD_COLOR)
 invHsvLower = np.array([86,117,255])
@@ -72,13 +73,13 @@ def checkTerminated():
     global terminated
 
     if(terminated):
-        raise Exception("Bot thread terminated.")
+        raise Exception("Ark thread terminated.")
 
     #if paused, halt but also die if terminated 
     while(paused):
         time.sleep(0.1)
         if(terminated):
-            raise Exception("Bot thread terminated.")
+            raise Exception("Ark thread terminated.")
 
 #internal function, don't use. sleeps for a period of time
 def sleep(s):
@@ -93,23 +94,49 @@ def sleep(s):
         time.sleep(s)
     checkTerminated()
 
+#used to determine whether to set gamma/fps at launch or not
+def setFirstRun(f):
+    global firstRun
+    firstRun = f
+
 #types t.maxfps xx into the in-game console
 def limitFps():
     global setFps
     checkTerminated()
     pyautogui.press("tab")
-    sleep(0.5)
+    sleep(1)
     pyautogui.typewrite("t.maxfps " + str(setFps), interval=0.02)
+    sleep(1)
     pyautogui.press("enter")
 
 #type gamma 5 into the console
 def setGamma():
     checkTerminated()
     pyautogui.press("tab")
-    sleep(0.5)
+    sleep(1)
     pyautogui.typewrite("gamma 5", interval=0.02)
+    sleep(1)
     pyautogui.press("enter")
 
+#make sure extended HUD is enabled
+def setExtendedHud():
+    if(checkSpawned() == True): # HUD already enabled
+        return
+    else: # HUD not enabled
+        pyautogui.press("h") # attempt to toggle hud
+        sleep(2)
+        if(checkSpawned() == False): # HUD couldn't be enabled
+            errorMessage = "**Failed to enable HUD!** Make sure in settings the 'Toggle Extended HUD Info:' is ticked."
+            arkMonitoring.postMessageToDiscord(errorMessage, 1)
+        else: # Couldn't enable HUD
+            print("Enabled HUD!")
+
+#checks for when the bot is spawned
+def checkSpawned():
+    spawnedPixel = pyautogui.pixel(16,50)
+    if(spawnedPixel == (255, 179, 63)):
+        return True
+    return False
 
 #sets the look up/down delays plus the FPS which affects turning speed
 def setParams(up, down, fps):
@@ -155,13 +182,13 @@ def checkBedButtonEdge():
     img = cv2.Canny(img, 100, 200)
     res = cv2.matchTemplate(img, bed_button_edge, cv2.TM_CCOEFF)
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
-    print(max_val)
+
     if(max_val > 2500000):
         return True
     return False
 
 def detectWhiteFlash():
-    roi = screen.getScreen()[700:900,0:1920]
+    roi = screen.getScreen()[700:900,650:1920]
     res1 = np.all([roi == 255])
     return res1
  
@@ -181,18 +208,31 @@ def bedSpawn(bedName, x, y, singlePlayer = False):
         pyautogui.moveTo(755, 983)
         sleep(0.25)
         pyautogui.click()
-        count = 0
-        while(detectWhiteFlash() == False):
-            time.sleep(0.1)
-            count += 1
-            if(count > 200):
-                break
 
-        sleep(13)
+        # We don't have extended HUD enabled yet - so use old method for spawning
         if(firstRun == True):
+            count = 0
+            while(detectWhiteFlash() == False):
+                time.sleep(0.1)
+                count += 1
+                if(count > 200):
+                    break
+
+            sleep(13)
+            
             firstRun = False
             limitFps()
             setGamma()
+            #setExtendedHud()
+        else:
+            count = 0
+            while(detectWhiteFlash() == False):
+                time.sleep(0.1)
+                count += 1
+                if(count > 200):
+                    break
+            sleep(13)
+        
         if(singlePlayer):
             sleep(1.0)
             lookDown()
@@ -210,6 +250,8 @@ def bedSpawn(bedName, x, y, singlePlayer = False):
         pyautogui.press('c')
         return True
     else:
+        errorMessage = "**Stuck on bed screen!** Likely failed to spawn!"
+        arkMonitoring.postMessageToDiscord(errorMessage, 1)
         return False
 
 #returns true if an inventory is open
@@ -257,7 +299,6 @@ def tribelogIsOpen():
 
     res = cv2.matchTemplate(gray_screen, tribelog_template, cv2.TM_CCOEFF)
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
-    print(max_val)
 
     if(max_val > 50000000):
         return True
@@ -411,11 +452,11 @@ def openInventory(retries = 20):
 def tTransferTo(nRows):
     checkTerminated()
     sleep(0.5)
-    pyautogui.moveTo(167, 280, 0.1)
+    pyautogui.moveTo(167, 745, 0.1)
     pyautogui.click()
     for j in range(nRows): #transfer a few rows back to the gacha
         for i in range(6):
-            pyautogui.moveTo(167+(i*95), 280, 0.1)
+            pyautogui.moveTo(167+(i*95), 745, 0.1)
             pyautogui.press('t')
             checkTerminated()
 
@@ -509,9 +550,37 @@ def step(key, delay):
 def crystalHotBarUse():
     for i in range(2, 10):
         pyautogui.press(str(i))
-        sleep(0.05)
     pyautogui.press("0")
-    sleep(0.1)
+
+def crystalHotBarSetup():
+    # put crystals on hotbars by double clicking the crystals one by one
+    for _ in range(0, 10):
+        pyautogui.click(167, 280, clicks=2)
+        sleep(2)
+    # remove crystal from slot 1
+    pyautogui.moveTo(690, 1046, 0.1)
+    pyautogui.dragTo(400, 700, 1, button='left')
+    
+    """
+    # old method: drags the crystals down one by one
+    # drags crystals from the inventory onto the bot's hotbar
+    hotbarX = 749 # X position of 2 on hotbar
+    for _ in range(0, 9):
+        pyautogui.moveTo(167, 280, 0.1) # move mouse over the crystal
+        pyautogui.dragTo(hotbarX, 1046, 0.1, button='left') # drag crystal to hotbar
+        hotbarX += 60 # +60 is enough to go to next hotbar slot
+        sleep(1)
+    """
+
+def crystalHotBarUseHoldStart():
+    for i in range(2, 10):
+        pyautogui.keyDown(str(i))
+    pyautogui.keyDown("0")
+    
+def crystalHotBarUseHoldStop():
+    for i in range(2, 10):
+        pyautogui.keyUp(str(i))
+    pyautogui.keyUp("0")
 
 def harvestCropStack(fruit, lookUpTime=1.0):
     checkTerminated()
@@ -537,6 +606,48 @@ def harvestCropStack(fruit, lookUpTime=1.0):
             closeInventory()
         step('up', 0.09)
     
-    
-            
-    
+def checkConsole():
+    spawnedPixel = pyautogui.pixel(1070,1070)
+    if(spawnedPixel == (0, 0, 0)):
+        return True
+    return False
+
+def openConsole():
+    checkTerminated()
+    for i in range(30):
+        if(checkConsole() == True): # Console already opened
+            break
+        else:
+            if(i > 0):
+                pyautogui.press("esc") # attempt to close any menu
+                time.sleep(1)
+                if(i % 5 == 0): # only click every 5th attempt
+                    pyautogui.click(1000, 1000) # attempt to click to help close a menu
+                    time.sleep(1)
+        pyautogui.press("tab") # attempt to open console
+        checkTerminated()
+        time.sleep(1)
+
+def closeConsole():
+    checkTerminated()
+    if(checkConsole() == True): # Console already opened
+        pyautogui.press("esc")    
+
+# Enters a tek pod
+def tekPodEnter():
+    pyautogui.press('c')
+    lookDown()
+    sleep(1)
+    pyautogui.keyDown('e')
+    sleep(0.5)
+    pyautogui.moveTo(1266, 541, duration=0.1)
+    pyautogui.keyUp('e')
+    sleep(2)
+
+# Leaves a tek pod
+def tekPodLeave():
+    pyautogui.press('e')
+    lookDown()
+    sleep(1)
+    pyautogui.press('e')
+    sleep(1)
